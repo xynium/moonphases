@@ -1,0 +1,8 @@
+{
+  "name": "Moon Phases",
+  "description": "Moon and sun data",
+  "uuid": "moonphases@xynium.github.com",
+  "shell-version": [
+    "3.36"
+  ]
+}

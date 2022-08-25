@@ -1,0 +1,4 @@
+/* Add your custom extension styling here */
+.moonphases-icon-size { icon-size: 10px; }
+.moonphases-button-action > StIcon { icon-size: 16px; }
+.moonphases-button-box { padding: 0px; spacing: 22px; }

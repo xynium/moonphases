@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="moonphases">
+    <schema id="org.gnome.shell.extensions.moonphases" path="/org/gnome/shell/extensions/moonphases/">
+        <key type="d" name="latitude">
+            <default>40</default>
+            <summary>Latitude</summary>
+            <description>Latitude</description>
+        </key>
+        <key name="longitude" type="d">
+            <default>3</default>
+            <summary>Longitude</summary>
+        </key>
+        <key name="comblat" type="i">
+            <default>0</default>
+            <summary>Longitude</summary>
+        </key>
+        <key name="comblon" type="i">
+            <default>0</default>
+            <summary>Longitude</summary>
+        </key>
+    </schema>
+</schemalist>
