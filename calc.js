@@ -26,14 +26,14 @@ let sTmpRet;
      
 function sunfunc() {
     sTmpRet=""; // efface tampon sortie
-    lemidcouch(iAA,iMM+1,iJJ);
+    lemidcouch(iAA,iMM,iJJ);
     return sTmpRet;
 }
 
 
 function moonfunc() {
     sTmpRet=""; // efface tampon sortie
-    levlun(iAA,iMM+1,iJJ);
+    levlun(iAA,iMM,iJJ);
     Eclairag();
     return sTmpRet;
 }
@@ -41,7 +41,7 @@ function moonfunc() {
 //table lune
 function moontabfunc() {
     sTmpRet=""; // efface tampon sortie
-    prphalun(iAA,iMM+1);
+    prphalun(iAA,iMM);
     return sTmpRet;
 }
 
