@@ -4,9 +4,15 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
-const Lang = imports.lang;
+const Lang = imports.lang; 
+const Gettext = imports.gettext;
 
-var wdjt1,wdjt2,wdjt3,wdjt4;
+Gettext.bindtextdomain("moonphases", Me.dir.get_child("locale").get_path());
+Gettext.textdomain("moonphases");
+// The `gettext()`function is often aliased as `_()`
+const _ = Gettext.gettext;
+
+
 
 function init () {}
 
@@ -26,7 +32,7 @@ function getSettings () {
   let schemaObj = schemaSource.lookup(
     'org.gnome.shell.extensions.moonphases', true);
   if (!schemaObj) {
-    throw new Error('cannot find schemas');
+    throw new Error(_('cannot find schemas'));
   }
   return new Gio.Settings({ settings_schema : schemaObj });
 }
@@ -47,7 +53,7 @@ class MyPrefsWidget extends Gtk.ScrolledWindow {
         
     let widget = builder.get_object('latitude');
     widget.set_text(this._settings.get_double('latitude').toString());  //met le champ a jour avec le setting
-    wdjt1=widget.connect('changed', (widget) => {    // connecte le champ po enregistrer les changement
+    widget.connect('changed', (widget) => {    // connecte le champ po enregistrer les changement
                 let text = widget.get_text();
                 if (!text) text = widget.get_placeholder_text();
                 this._settings.set_double('latitude', parseFloat(text));
@@ -55,7 +61,7 @@ class MyPrefsWidget extends Gtk.ScrolledWindow {
     
     widget = builder.get_object('longitude');
     widget.set_text(this._settings.get_double('longitude').toString());
-    wdjt2=widget.connect('changed', (widget) => {
+    widget.connect('changed', (widget) => {
         let text = widget.get_text();
                 if (!text) text = widget.get_placeholder_text();
                 this._settings.set_double('longitude', parseFloat(text));
@@ -63,13 +69,13 @@ class MyPrefsWidget extends Gtk.ScrolledWindow {
     
     widget = builder.get_object('comblat');
     widget.set_active(this._settings.get_int('comblat'));
-    wdjt3=widget.connect('changed', (widget) => {
+    widget.connect('changed', (widget) => {
                 this._settings.set_int('comblat', widget.get_active());
     });
          
     widget = builder.get_object('comblon');
     widget.set_active(this._settings.get_int('comblon'));
-    wdjt4=widget.connect('changed', (widget) => {
+    widget.connect('changed', (widget) => {
                 this._settings.set_int('comblon', widget.get_active());
     });
         

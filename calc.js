@@ -6,12 +6,18 @@
 // Oct 2003
 // rev aout 2022
 //----------------------------------------------------------------------
- 
+
+const Me = imports.misc.extensionUtils.getCurrentExtension(); 
+const Gettext = imports.gettext;
+
+
+Gettext.bindtextdomain("moonphases", Me.dir.get_child("locale").get_path());
+Gettext.textdomain("moonphases");
+// The `gettext()`function is often aliased as `_()`
+const _ = Gettext.gettext;
 
 var iAA,iMM,iJJ;
 var  m_Lat,m_Long;
-
-
 
  //specific po bouquin de bouigue
 let TJ,LR,LS,MR,OB,OBR,TS,T,V;
@@ -188,7 +194,7 @@ function ECLIEQUA()
              return;
          }
      }  
-     sortRapport("AH est indéterminé...");
+     sortRapport(_("AH est indeterminé."));
      // DD=DR/RA1;
 }
 //MODULE "EQUAHOR"
@@ -201,7 +207,7 @@ function EQUAHOR()
      if ((1-CZ*CZ)<=0)
      {
          SZ=0; ZR=0;      
-         sortRapport(" Direction zenithale ! ");
+         sortRapport(_("Direction zenithale !"));
      }
      else
      {
@@ -355,22 +361,22 @@ function lemidcouch( AA, M, J)
          K=-1; 
          sprgm(AA,M,J,HH);
          if (ZK!=1)     { 
-                tampon="Soleil Lever "+X1+" H "+X2+" " ;
+                tampon=_("Soleil Lever : ")+X1+" : "+X2+" " ;
                 sortRapport(tampon);
                 K=1;
                 sprgm(AA,M,J,HH);
-                tampon="Soleil Coucher "+X1+" H "+X2+" ";
+                tampon=_("Soleil Coucher : ")+X1+" : "+X2+" ";
                 sortRapport(tampon);
               
           } 
           else  {    
                
-                 sortRapport("...Soleil toujours dans le ciel ");
+                 sortRapport(_("...Soleil toujours dans le ciel."));
           }
     }
     else   {
         
-         sortRapport("...Soleil au-dessous de l'Horizon ");      
+         sortRapport(_("...Soleil au-dessous de l'Horizon."));      
     }  
     return;
 }        
@@ -393,7 +399,7 @@ function levlun( A, M, J)
     COR=PAR-34.5; ER=COR*RA1/60;
     lever();
     TS1=TS; K=-1;
-    Hw="Lune Lever";
+    Hw=_("Lune Lever : ");
     TS2=TS1;
     sprgm5( A, M, J, dHH);
     
@@ -401,7 +407,7 @@ function levlun( A, M, J)
         sprgm3();
     // else 
         sprgm4();
-   /*  K=0;StrCopy( Hw,"Méridien"); TS2=TS1; sprgm5( A, M, J, dHH);
+   /*  K=0;StrCopy( Hw,"Meridien"); TS2=TS1; sprgm5( A, M, J, dHH);
      if (!StrCompare (HHw,"Lune dans le ciel"))   {
              sprintf(tampon,"%s %ih%imn ",Hw,X1,X2);  
              WinDrawChars(tampon, StrLen(tampon), 1,30);
@@ -412,7 +418,7 @@ function levlun( A, M, J)
            sprgm3();
    //  else 
            sprgm4();  */
-     K=1; Hw="Lune Coucher";
+     K=1; Hw=_("Lune Coucher : ");
       TS2=TS1;
       sprgm5( A, M, J, dHH);
       if (ZK!=0) 
@@ -425,13 +431,13 @@ function sprgm3()
 {                
             if (ZK==2)    {
                          
-                         sortRapport("Lune au-dessous de l'horizon");    
+                         sortRapport(_("Lune au-dessous de l'horizon."));    
                          ZK=0;
                          return;
             } 
             if (ZK==1) {
                         
-                         sortRapport("Lune dans le ciel");    
+                         sortRapport(_("Lune dans le ciel."));    
                          ZK=0;
                          return;
             }    
@@ -441,12 +447,12 @@ function sprgm3()
 function sprgm4()    
 {                 
             if (HHw==1)     {
-                sortRapport("Impossible");    
+                sortRapport(_("Impossible."));    
                 HHw=0;
                 X1=0;X2=0;ZK=0;
             }    
             else {  
-               tampon=Hw+"  "+X1+" H "+X2+"  ";  
+               tampon=Hw+"  "+X1+" : "+X2+"  ";  
                sortRapport(tampon);    
                ZK=0;
             }   
@@ -591,7 +597,7 @@ function lun()
 //MODULE "PRPHALUN"
 function prphalun( A, M)
 {
-   const  Qw=["P.Q.","P.L.","D.Q.","N.L."]; 
+   const  Qw=[_("P.Q."),_("P.L."),_("D.Q."),_("N.L.")]; 
    let               VJ,Q,YK;
    let DIF,DIF1,DIF2,LS1,LS2,LL1,LL2; 
    let XKK=[333,303,272, 242,211,180,150,119,89,58,1000];
@@ -679,7 +685,7 @@ function prphalun( A, M)
         if ( S>=30) MN++;
         if ((Mw==1) &&(YK==1)) return;
         if ( M==Mw) { 
-                tampon=Qw[Q-1]+" le "+Jn+"/"+Mw+"  "+Math.floor(dHH)+" H "+MN+" ";
+                tampon=Qw[Q-1]+" le "+Jn+"/"+Mw+"  "+Math.floor(dHH)+" : "+MN+" ";
                 sortRapport(tampon);    
                 lin+=10;  
         }       
@@ -716,6 +722,118 @@ function Eclairag()
        //di=0;
        ii=(100*(1+Math.cos(di*RA1))/2);
 
-       tampon="Luminosité : "+Math.floor(ii)+"% ";
+       tampon=_("Luminosité : ")+Math.floor(ii)+"% ";
        sortRapport(tampon);    
 }
+
+function CleanVar(){
+    
+  /*  delete( iAA);
+    delete(iMM);
+    delete(iJJ);
+    delete(  m_Lat);
+    delete(m_Long);
+
+    delete( TJ);
+    delete(LR);
+    delete(LS);
+    delete(MR);
+    delete(OB);
+    delete(OBR);
+    delete(TS);
+    delete(T);
+    delete(V);
+    delete(DN);
+    delete(TS2);
+    delete(NOB);
+    delete(AZR);
+    delete(PAR);
+    delete(BL);
+    delete(CP);
+    delete(AH);
+    delete(AHO);
+    delete(AHR);
+    delete(BR);
+    delete(CAZ);
+    delete(DR);
+    delete(ER);
+    delete(dHH);
+    delete(HH);
+    delete(JJ);
+    delete(LAR); 
+    delete(HJ);
+    delete(E);
+    delete(LL);
+    delete(LSM);
+    delete(NL);
+    delete(NU);
+    delete(P);
+    delete(PL);
+    delete(RA1);
+    delete(RA2);
+    delete( Hw);
+    delete( X1);
+    delete(X2);
+    delete(iLine);
+    delete(HHw);
+    delete(F);
+    delete(K);
+    delete(ZK);
+    delete(tampon);
+    delete( sTmpRet);*/
+      iAA=null;
+    iMM=null;
+    iJJ=null;
+      m_Lat=null;
+    m_Long=null;
+
+     TJ=null;
+    LR=null;
+    LS=null;
+    MR=null;
+    OB=null;
+    OBR=null;
+    TS=null;
+    T=null;
+    V=null;
+    DN=null;
+    TS2=null;
+    NOB=null;
+    AZR=null;
+    PAR=null;
+    BL=null;
+    CP=null;
+    AH=null;
+    AHO=null;
+    AHR=null;
+    BR=null;
+    CAZ=null;
+    DR=null;
+    ER=null;
+    dHH=null;
+    HH=null;
+    JJ=null;
+    LAR=null; 
+    HJ=null;
+    E=null;
+    LL=null;
+    LSM=null;
+    NL=null;
+    NU=null;
+    P=null;
+    PL=null;
+    RA1=null;
+    RA2=null;
+     Hw=null;
+     X1=null;
+    X2=null;
+    iLine=null;
+    HHw=null;
+    F=null;
+    K=null;
+    ZK=null;
+    tampon=null;
+     sTmpRet=null;
+}
+
+//end of file

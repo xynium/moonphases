@@ -14,12 +14,19 @@ const Lang = imports.lang;
 const ExtensionUtils = imports.misc.extensionUtils;
 const prefs = Me.imports.prefs;
 const calc = Me.imports.calc;
+const Gettext = imports.gettext;
+
+
+
+Gettext.bindtextdomain("moonphases", Me.dir.get_child("locale").get_path());
+Gettext.textdomain("moonphases");
+// The `gettext()`function is often aliased as `_()`
+const _ = Gettext.gettext;
 
 let myPopup;
 let label; 
-let pmItem,timeout;
+let timeout;
 let settings;
-
 
 const MyPopup = GObject.registerClass(
 class MyPopup extends PanelMenu.Button {
@@ -28,14 +35,14 @@ class MyPopup extends PanelMenu.Button {
         super._init(0);
         
         this.format_params = {
-                hour: "2-digit",
-                minute: "2-digit",
-                timeZone: 'UTC',
-                hour12: false
-            }
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: 'UTC',
+            hour12: false
+        }
     
-        // Label
-        label = new St.Label({y_align: Clutter.ActorAlign.CENTER,text: "HOLA!!!"});
+        // Label  voir les style at https://docs.gtk.org/Pango/pango_markup.html
+        label = new St.Label({style_class: 'moonphases-label',y_align: Clutter.ActorAlign.CENTER,text: _("HOLA!!!")});
         let topBox = new St.BoxLayout();
         topBox.add_actor(label);
                
@@ -49,27 +56,27 @@ class MyPopup extends PanelMenu.Button {
 
     buildmenu(){
         // Destroy previous box
-		if (this.mainBox != null)
-			this.mainBox.destroy();
+        if (this.mainBox != null)
+            this.mainBox.destroy();
 
-		// Create main box
-		this.mainBox = new St.BoxLayout();
-		this.mainBox.set_vertical(true);
+        // Create main box
+        this.mainBox = new St.BoxLayout();
+        this.mainBox.set_vertical(true);
 
-		// Create report box
-		this.reportBox = new St.BoxLayout();
-		this.reportBox.set_vertical(true);
+        // Create report box
+        this.reportBox = new St.BoxLayout();
+        this.reportBox.set_vertical(true);
 
-		// Create report scrollview
-		var scrollView = new St.ScrollView({style_class: 'vfade',
-			hscrollbar_policy: Gtk.PolicyType.NEVER,
-			vscrollbar_policy: Gtk.PolicyType.AUTOMATIC});
-		scrollView.add_actor(this.reportBox);
-		this.mainBox.add_actor(scrollView);
+        // Create report scrollview
+        var scrollView = new St.ScrollView({style_class: 'vfade',
+            hscrollbar_policy: Gtk.PolicyType.NEVER,
+            vscrollbar_policy: Gtk.PolicyType.AUTOMATIC});
+        scrollView.add_actor(this.reportBox);
+        this.mainBox.add_actor(scrollView);
 
-		// Separator
-		//var separator = new PopupMenu.PopupSeparatorMenuItem();
-		//this.mainBox.add_actor(separator.actor);
+        // Separator
+        //var separator = new PopupMenu.PopupSeparatorMenuItem();
+        //this.mainBox.add_actor(separator.actor);
       
         let customButtonBox = new St.BoxLayout({
             style_class: 'moonphases-button-box ',
@@ -83,32 +90,26 @@ class MyPopup extends PanelMenu.Button {
         });
       
       
-      // custom round preferences button
+        // custom round preferences button
         let prefsButton = this._createRoundButton('preferences-system-symbolic', _("Preferences"));
         prefsButton.connect('clicked', Lang.bind(this, function(self) {
             this.menu.actor.hide();
-            ExtensionUtils.openPrefs();
-            
-            
+            ExtensionUtils.openPrefs();  // refresh will do 1 sec later with update
         }));
         customButtonBox.add_actor(prefsButton);
         // now add the buttons 
         this.mainBox.actor.add_actor(customButtonBox);
 
         this.menu.box.add(this.mainBox);
-     
-     
     }
     
      _createRoundButton(iconName) {
         let button = new St.Button({
-            style_class: 'message-list-clear-button button moonphases-button-action'
+            style_class: 'moonphases-button-action' //'message-list-clear-button button moonphases-button-action'
         });
-
         button.child = new St.Icon({
             icon_name: iconName
         });
-
         return button;
     }
     
@@ -120,17 +121,17 @@ class MyPopup extends PanelMenu.Button {
         calc.iAA=AA;calc.iMM=MM+1;calc.iJJ=JJ; //udate date month start 0
      
         this.reportBox.destroy_all_children();  //efface ancien
-		let item = new PopupMenu.PopupMenuItem(calc.sunfunc());
+        let item = new PopupMenu.PopupMenuItem(calc.sunfunc());
         this.reportBox.add(item.actor);
        
-		var separator = new PopupMenu.PopupSeparatorMenuItem();
-		this.reportBox.add_actor(separator.actor);
+        var separator = new PopupMenu.PopupSeparatorMenuItem();
+        this.reportBox.add_actor(separator.actor);
        
         item = new PopupMenu.PopupMenuItem(calc.moonfunc());
         this.reportBox.add(item.actor);
-		
+
         separator = new PopupMenu.PopupSeparatorMenuItem();
-		this.reportBox.add_actor(separator.actor);
+        this.reportBox.add_actor(separator.actor);
         
         item = new PopupMenu.PopupMenuItem(calc.moontabfunc());
         this.reportBox.add(item.actor);
@@ -140,17 +141,14 @@ class MyPopup extends PanelMenu.Button {
 
 function update() {
     let now = new Date();
-    label.set_text(  new Intl.DateTimeFormat(  "default", myPopup.format_params    ).format(now) + " UTC " );
+    label.set_text(new Intl.DateTimeFormat("default",myPopup.format_params).format(now) + " UTC ");
     myPopup.updatemenu(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
     return true;
   }
   
 
 function init() {
-     // load correct menuItem depending on Gnome version
-   /* if (ExtensionUtils.versionCheck(['3.36'], Config.PACKAGE_VERSION)) {
-               MenuItem = Me.imports.menuItem;
-    }*/
+   
 }
 
 function enable() {
@@ -162,6 +160,9 @@ function enable() {
 
 function disable() {
   Mainloop.source_remove(timeout);
+  calc.CleanVar();
+  settings=null;
+  label=null;
   myPopup.destroy();
 }
 
