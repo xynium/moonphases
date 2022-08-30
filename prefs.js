@@ -4,37 +4,18 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Gio = imports.gi.Gio;
-const Lang = imports.lang; 
-const Gettext = imports.gettext;
-
-Gettext.bindtextdomain("moonphases", Me.dir.get_child("locale").get_path());
-Gettext.textdomain("moonphases");
-// The `gettext()`function is often aliased as `_()`
+const ExtensionUtils = imports.misc.extensionUtils;
+const Gettext = imports.gettext.domain('moonphases');
 const _ = Gettext.gettext;
 
 
-
 function init () {}
+
 
 function buildPrefsWidget () {
   let widget = new MyPrefsWidget();
   widget.show_all();
   return widget;
-}
-
-function getSettings () {
-  let GioSSS = Gio.SettingsSchemaSource;
-  let schemaSource = GioSSS.new_from_directory(
-    Me.dir.get_child("schemas").get_path(),
-    GioSSS.get_default(),
-    false
-  );
-  let schemaObj = schemaSource.lookup(
-    'org.gnome.shell.extensions.moonphases', true);
-  if (!schemaObj) {
-    throw new Error(_('cannot find schemas'));
-  }
-  return new Gio.Settings({ settings_schema : schemaObj });
 }
 
 
@@ -45,7 +26,7 @@ class MyPrefsWidget extends Gtk.ScrolledWindow {
 
     super._init(params);
     
-    this._settings = getSettings();
+    this._settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.moonphases'); 
 
     let builder = new Gtk.Builder();
     builder.set_translation_domain('MoonPhases');

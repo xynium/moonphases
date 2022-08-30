@@ -1,5 +1,5 @@
-/* Add your custom extension styling here */
-.moonphases-label {color : #FFE5CC; font-weight: bold;}
-.moonphases-icon-size { icon-size: 10px; }
-.moonphases-button-action > StIcon { icon-size: 16px; }
+/* custom extension styling here */
+.moonphases-label {color : #FFE5CC; font-weight: bold;font-size: 12pt}
+.moonphases-button-action { icon-size: 20px; }
 .moonphases-button-box { padding: 0px; spacing: 22px; }
+.moonphases-drawarea-dim {width: 16px;  height: 16px; }
