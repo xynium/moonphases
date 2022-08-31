@@ -100,7 +100,6 @@ class MyPopup extends PanelMenu.Button {
             isFresh=0; // refresh will do 1 sec later with update
         });
         customButtonBox.add_actor(prefsButton);
-        // now add the buttons 
         this.mainBox.add_actor(customButtonBox);
 
         this.menu.box.add(this.mainBox);
@@ -124,7 +123,7 @@ class MyPopup extends PanelMenu.Button {
         cr.translate(area.width / 2, area.height / 2);
         cr.scale(area.width / 2, area.height / 2);
 
-        let old=/*Math.floor*/((  new Date()-calc.NLDte) / _MS_PER_DAY);  // age de la lune
+        let old=((new Date()-calc.NLDte) / _MS_PER_DAY);  // age de la lune
         //old+=0.6;
         while (old<0) old+=MTHMOON;
         while (old>MTHMOON) old-=MTHMOON;
@@ -144,7 +143,7 @@ class MyPopup extends PanelMenu.Button {
         cr.setSourceRGBA (RL/255, GL/255, BL/255, 1); 
         cr.arc(0.0, 0.0, 1.0 - 0.05, 0,  Math.PI);
         cr.fill();
-        cr.setSourceRGBA(RD/255, GD/255, BD/255, 1);    // color dark
+        cr.setSourceRGBA(RD/255,GD/255, BD/255, 1);    // color dark
         cr.arcNegative(0.0, 0.0, 1.0 - 0.05, 0,  Math.PI);
         cr.fill();
         if (C<0) {
@@ -159,24 +158,26 @@ class MyPopup extends PanelMenu.Button {
     }
         
     updatemenu (AA,MM,JJ){
-        calc.m_Lat=calc.Sexa2Dec(settings.get_double('latitude'));  //update la position
-        if (settings.get_int('comblat')==1) calc.m_Lat=-calc.m_Lat;
-        calc.m_Long=calc.Sexa2Dec(settings.get_double('longitude'));
-        if (settings.get_int('comblon')==1) calc.m_Long=-calc.m_Long;
-        calc.iAA=AA;calc.iMM=MM+1;calc.iJJ=JJ; //udate date month start 0
+        calc.mLat=calc.Sexa2Dec(settings.get_double('latitude'));  //update la position
+        if (settings.get_int('comblat')==1) calc.mLat*=-1;
+        calc.mLong=calc.Sexa2Dec(settings.get_double('longitude'));
+        if (settings.get_int('comblon')==1) calc.mLong*=-1;
+        calc.iAA=AA;calc.iMM=MM+1;calc.iJJ=JJ; //update date month start 0
+        
+        //calc.iAA=1994;calc.iMM=6;calc.iJJ=21; calc.mLat=48.833;calc.mLong=2.337;
      
         this.reportBox.destroy_all_children();  //efface ancien
         let item = new PopupMenu.PopupMenuItem(calc.sunfunc());
         this.reportBox.add(item.actor);
        
-        var separator = new PopupMenu.PopupSeparatorMenuItem();
-        this.reportBox.add_actor(separator.actor);
+        //var separator = new PopupMenu.PopupSeparatorMenuItem();
+        //this.reportBox.add_actor(separator.actor);
        
         item = new PopupMenu.PopupMenuItem(calc.moonfunc());
         this.reportBox.add(item.actor);
 
-        separator = new PopupMenu.PopupSeparatorMenuItem();
-        this.reportBox.add_actor(separator.actor);
+        //separator = new PopupMenu.PopupSeparatorMenuItem();
+        //this.reportBox.add_actor(separator.actor);
         
         item = new PopupMenu.PopupMenuItem(calc.moontabfunc());
         this.reportBox.add(item.actor);
