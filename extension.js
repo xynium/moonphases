@@ -81,7 +81,7 @@ class MyPopup extends PanelMenu.Button {
         scrollView.add_actor(this.reportBox);
         this.mainBox.add_actor(scrollView);
 
-         let customButtonBox = new St.BoxLayout({
+        let customButtonBox = new St.BoxLayout({
             style_class: 'moonphases-button-box ',
             vertical: false,
             clip_to_allocation: true,
@@ -124,10 +124,9 @@ class MyPopup extends PanelMenu.Button {
         cr.scale(area.width / 2, area.height / 2);
 
         let old=((new Date()-calc.NLDte) / _MS_PER_DAY);  // age de la lune
-        //old+=0.6;
         while (old<0) old+=MTHMOON;
         while (old>MTHMOON) old-=MTHMOON;
-        log ('depuis nouvelle lune '+old);
+        //log ('depuis nouvelle lune '+old);
 
         let ALPHA=2*Math.PI*old/MTHMOON;
         let C=Math.cos(ALPHA);
@@ -135,7 +134,7 @@ class MyPopup extends PanelMenu.Button {
         
         let ALat=settings.get_double('latitude')*Math.PI/180.0
         if (settings.get_int('comblat')==1) ALat*=-1; 
-        //ALat=0 ; //Math.PI/2;  //Debug
+        //log('Declination '+calc.OB);
         let ARot=-ALat+Math.PI/2;
         if (S<0) ARot+=2*ALat;
         cr.rotate(ARot-Math.PI/2);
@@ -163,22 +162,14 @@ class MyPopup extends PanelMenu.Button {
         calc.mLong=calc.Sexa2Dec(settings.get_double('longitude'));
         if (settings.get_int('comblon')==1) calc.mLong*=-1;
         calc.iAA=AA;calc.iMM=MM+1;calc.iJJ=JJ; //update date month start 0
-        
-        //calc.iAA=1994;calc.iMM=6;calc.iJJ=21; calc.mLat=48.833;calc.mLong=2.337;
-     
+
         this.reportBox.destroy_all_children();  //efface ancien
         let item = new PopupMenu.PopupMenuItem(calc.sunfunc());
         this.reportBox.add(item.actor);
        
-        //var separator = new PopupMenu.PopupSeparatorMenuItem();
-        //this.reportBox.add_actor(separator.actor);
-       
         item = new PopupMenu.PopupMenuItem(calc.moonfunc());
         this.reportBox.add(item.actor);
 
-        //separator = new PopupMenu.PopupSeparatorMenuItem();
-        //this.reportBox.add_actor(separator.actor);
-        
         item = new PopupMenu.PopupMenuItem(calc.moontabfunc());
         this.reportBox.add(item.actor);
     }    
@@ -215,7 +206,7 @@ function disable() {
   calc.CleanVar();
   settings=null;
   label=null;
-  sFresh=null;
+  isFresh=null;
   myPopup.destroy();
   myPopup = null;
 }
