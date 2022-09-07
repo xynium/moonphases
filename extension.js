@@ -25,7 +25,6 @@ let area
 let timeout;
 let settings;
 let isFresh;  //as data change once a day contain the day of data
-//let old=0; // po debug 
 
 const MyPopup = GObject.registerClass(
 class MyPopup extends PanelMenu.Button {
@@ -93,11 +92,10 @@ class MyPopup extends PanelMenu.Button {
         });
 
         // custom round preferences button
-        let prefsButton = this.createRoundButton('gnome-settings'); //preferences-system-symbolic', _("Preferences"));
+        let prefsButton = this.createRoundButton('emblem-system'); 
         prefsButton.connect('clicked', () => {
             this.menu.actor.hide();
             ExtensionUtils.openPrefs(); 
-            isFresh=0; // refresh will do 1 sec later with update
         });
         customButtonBox.add_actor(prefsButton);
         this.mainBox.add_actor(customButtonBox);
@@ -106,11 +104,10 @@ class MyPopup extends PanelMenu.Button {
     }
     
     createRoundButton(iconName) {
-        let button = new St.Button({
-            style_class: 'moonphases-button-action' //'message-list-clear-button button moonphases-button-action'
-        });
+        let button = new St.Button();
         button.child = new St.Icon({
-            icon_name: iconName
+            icon_name: iconName,
+            style_class: 'moonphases-button-action' 
         });
         return button;
     }
@@ -179,12 +176,16 @@ class MyPopup extends PanelMenu.Button {
 function update() {
     let now = new Date();
     label.set_text(new Intl.DateTimeFormat("default",myPopup.format_params).format(now) + " UTC ");
+    if(settings.get_boolean("torefresh")== true){ // update sortie pref dialog
+        isFresh=0; 
+        settings.set_boolean("torefresh", false);
+        log('refresh');
+    }
     if (isFresh!=now.getUTCDate()){  // calc once a day
         myPopup.updatemenu(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
         isFresh=now.getUTCDate();
         area.queue_repaint();
     }
-    //area.queue_repaint(); // po debug
     return true;
 }
   

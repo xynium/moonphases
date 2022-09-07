@@ -90,30 +90,30 @@ function sol(ans)
     if (TJ<0) TJ++; 
     TJ=TJ/36525.0;   
     T = BJ / 36525.0;
-
-    LSM=280.4659+36000.76953*T+.0003025*T*T;
-    //LSM=280.46646+36000.76983*T+.0003032*T*T;
+    LSM=280.4659+36000.76953*T+0.0003025*T*T; //Bouigue
+    //LSM= 280.46646 + 36000.76983 * T + 0.0003032 * T*T; //internet
     LSM=REDCAD(LSM);  
     PS=282.9405+1.72009*T+.0004628*T*T+.00000033*T*T*T;
     PS=REDCAD(PS);
-    ES=.016709114-.000042052*T-.000000126*T*T;
+    ES=.016709114-.000042052*T-0.000000126*T*T;//Bouigue
+    //ES = .016708634 - 0.000042037 * T - 0.0000001267 * T*T; //internet
     MS=LSM-PS; MR=MS*RA1; E=ES;
     ANOMAL();
     VS=V/RA1;
     LS=PS+VS;  
     LS=REDCAD(LS); 
     TX=BJ/365242.2;
-    OB=23.43928-.1301403*TX-.00014163*TX*TX+.00050833*TX*TX*TX;
+    OB=23.43928-.1301403*TX-0.00014163*TX*TX+0.00050833*TX*TX*TX;
     OBR=OB*RA1;
     TS=280.4603+36000.7697*TJ+.00038708*TJ*TJ;
     TS=((dHH-12)*36624.22/36524.22)+REDCAD(TS)/15+mLong/15;
     if (TS<0) TS=TS+24;
     if (TS>24) TS=TS-24;
-    LL=218.31617+481267.88088*T-.00112767*T*T+.000001888*T*T*T;
+    LL=218.31617+481267.88088*T-0.00112767*T*T+0.000001888*T*T*T;
     LL=REDCAD(LL);
-    NL=125.043347-1934.137846*T+.00208444*T*T+.000002222*T*T*T;
+    NL=125.043347-1934.137846*T+0.00208444*T*T+0.000002222*T*T*T;
     NL=REDCAD(NL);
-    PL=83.353248+4069.013343*T-.0103625*T*T-.0000125*T*T*T;
+    PL=83.353248+4069.013343*T-0.0103625*T*T-0.0000125*T*T*T;
     PL=REDCAD(PL);
     R=(LL-LSM)*RA1; D=(LL-NL)*RA1;// G=(LL-PL)*RA1;// W=MR;
     NU=-17.2327*Math.sin(NL*RA1)/3600-1.2729*Math.sin(LSM*RA1*2)/3600;
@@ -146,12 +146,17 @@ function ANOMAL()
 
     U1=MR;
     bclSecu=0
-    do
-    {
-        if (bclSecu++>MAXBCL) break; //secu
-        U=U1;
-        U1=MR+E*Math.sin(U);
-    }while(Math.abs(U-U1)>.00001); //sorti 2 zero
+    try{
+        do
+        {
+            if (bclSecu++>MAXBCL) throw ('anomal error'); //secu
+            U=U1;
+            U1=MR+E*Math.sin(U);
+        }while(Math.abs(U-U1)>.0001); 
+    }
+    catch (err){
+        log (err);
+    }
     TV=Math.sin(U1/2)/Math.cos(U1/2);
     TV*=(Math.sqrt((1+E)/(1-E)));
     V=Math.atan(TV)*2;
@@ -278,21 +283,26 @@ function sprgm( AA, M, J, HH)
    
     dHH=HH;
     bclSecu=0;
-    do {
-        if (bclSecu++>MAXBCL) break; //secu
-        lever();
-        HH=(AH+AHO*K-TS2)*.99727+12-mLong/15;
-        if (HH<0) HH=HH+24; 
-        HP=HH;   
-        JULIEN(AA,M,J,HH);
-        sol(AA);
-        BR=0; LR=LS*RA1;
-        ECLIEQUA();
-        lever();
-        HH=(AH+AHO*K-TS2)*.99727+12-mLong/15;
-        if (HH<0) HH=HH+24; 
-    }while(Math.abs(HP-HH)>.00001); //sortie 2 zero
-    //X=HH;
+    try{
+        do {
+            if (bclSecu++>MAXBCL) throw ('sprgm error'); //secu
+            lever();
+            HH=(AH+AHO*K-TS2)*.99727+12-mLong/15;
+            if (HH<0) HH=HH+24; 
+            HP=HH;   
+            JULIEN(AA,M,J,HH);
+            sol(AA);
+            BR=0; LR=LS*RA1;
+            ECLIEQUA();
+            lever();
+            HH=(AH+AHO*K-TS2)*.99727+12-mLong/15;
+            if (HH<0) HH=HH+24; 
+        }while(Math.abs(HP-HH)>.0001); 
+    }
+    catch (err){
+        log (err);
+    }
+    
     if (HH<0) HH+=24; 
     X1=Math.floor(HH); 
     X2=Math.floor((HH-X1)*60); //X3=Math.floor((X-X1-X2/60)*36000)/10;
@@ -381,15 +391,13 @@ function levlun( A, M, J)
     Hw=_("Lune Lever : ");
     TS2=TS1;
     sprgm5( A, M, J, dHH);
-    
     if (ZK!=0) sprgm3();
-    sprgm4();
+    else sprgm4();
     K=1; Hw=_("Lune Coucher : ");
     TS2=TS1;
     sprgm5( A, M, J, dHH);
     if (ZK!=0) sprgm3();
-    //  else
-    sprgm4();
+    else sprgm4();
 }
  
 function sprgm3()
@@ -410,7 +418,7 @@ function sprgm3()
 function sprgm4()    
 {                 
     if (HHw==1)     {
-        sortRapport(_("Impossible."));    
+        sortRapport(Hw+_("Impossible."));  //mean not today  
         HHw=0;
         X1=0;X2=0;ZK=0;
     }    
@@ -428,51 +436,59 @@ function sprgm5( A, M, J, HH)
     let tk1;
     
     bclSecu=0; 
-    do{
-        if (bclSecu++>MAXBCL) break; //secu
-        HH=(AH+AHO*K-TS2)*.99727-mLong/15+12;    //175
-        tk1=0;
-        if ( HH>24)     {
-            TS2+=24;
-            tk1=1;
-        }
-        if ( HH<0)      {
-            TS2-=24;
-            tk1=1;
-        }
-    }while(tk1==1);
-            
-    bclSecu=0;
-    do {
-        HP=HH;
-        JULIEN(A,M,J,HH);
-        sol(A);
-        lun();
-        BR=BL*RA1; LR=LL*RA1;
-        ECLIEQUA();
-        lever();
-                    
-        do{ 
-            if (bclSecu++>MAXBCL) break; //secu
-            HH=(AH+AHO*K-TS2)*.99727-mLong/15+12;
+    try{
+        do{
+            if (bclSecu++>MAXBCL) throw('sprgm5 1 error'); //secu
+            HH=(AH+AHO*K-TS2)*.99727-mLong/15+12;    //175
             tk1=0;
-            if ( HH>24)  {
-                TS2=TS2+24;
+            if ( HH>24)     {
+                TS2+=24;
                 tk1=1;
             }
-            if ( HH<0) {
-                TS2=TS2-24;
+            if ( HH<0)      {
+                TS2-=24;
                 tk1=1;
             }
-        }while(tk1==1);  
-          
-          if (bclSecu++>MAXBCL) break; //secu              
-        if (Math.abs(HH-HP)>12)  {
-            HHw=1;
-            return;
-        }    
-    }while(Math.abs(HP-HH)>.00001);  //suprime 1 zero
-            // X=HH;
+        }while(tk1==1);
+    }
+    catch (err){
+        log (err);
+    }
+    try{     
+        bclSecu=0;
+        do {
+            HP=HH;
+            JULIEN(A,M,J,HH);
+            sol(A);
+            lun();
+            BR=BL*RA1; LR=LL*RA1;
+            ECLIEQUA();
+            lever();
+                        
+            do{ 
+                if (bclSecu++>MAXBCL) throw ('sprgm5 2 error'); //secu
+                HH=(AH+AHO*K-TS2)*.99727-mLong/15+12;
+                tk1=0;
+                if ( HH>24)  {
+                    TS2=TS2+24;
+                    tk1=1;
+                }
+                if ( HH<0) {
+                    TS2=TS2-24;
+                    tk1=1;
+                }
+            }while(tk1==1);  
+              
+              if (bclSecu++>MAXBCL) throw ('sprgm5 3 error'); //secu              
+            if (Math.abs(HH-HP)>12)  {
+                HHw=1;
+                return;
+            }    
+        }while(Math.abs(HP-HH)>.0001);  
+    }
+    catch (err){
+        log (err);
+    }
     if (HH<0) HH+=24; 
     if (HH>24) HH-=24; 
     X1=Math.floor(HH); X2=Math.floor(Math.abs(HH-X1)*600+.5)/10;
@@ -589,20 +605,25 @@ function prphalun(A, M,J)
         if ((K!=1) && (A/100==Math.floor(A/100)) && (A/400!=Math.floor(A/400)))  F=0;
         if (DJ>58) DJ=DJ-F;  
         bclSecu=0;
-        do   {
-            if (bclSecu++>MAXBCL) break; //secu
-            Cont++; 
-            XK=XKK[Cont];Mw=12-Cont;
-            if (XK==1000){
-                if (DJ>30)  {
-                    XK=30; Mw=2;
-                }        
-                else  {
-                    XK=-1; Mw=1;  
+        try {
+            do   {
+                if (bclSecu++>MAXBCL) throw('prphalun error'); //secu
+                Cont++; 
+                XK=XKK[Cont];Mw=12-Cont;
+                if (XK==1000){
+                    if (DJ>30)  {
+                        XK=30; Mw=2;
+                    }        
+                    else  {
+                        XK=-1; Mw=1;  
+                    } 
+                    break;
                 } 
-                break;
-            } 
-        }while(Math.floor(DJ-.5)<=XK) ;
+            }while(Math.floor(DJ-.5)<=XK) ;
+        }
+        catch (err){
+            log (err);
+        }
         Jdos=DJ-XK;
         if ((DJ>333) && (Jdos>=31.5))    {
             A++; Jdos-=31; Mw=1;
