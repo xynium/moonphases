@@ -1,66 +1,54 @@
 // moon phases preferances
-
-const GObject = imports.gi.GObject;
-const Gtk = imports.gi.Gtk;
-const Me = imports.misc.extensionUtils.getCurrentExtension();
-const Gio = imports.gi.Gio;
+'use strict';
+const {  Gio, Gtk ,GObject} = imports.gi;
 const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 const Gettext = imports.gettext.domain('moonphases');
 const _ = Gettext.gettext;
 
-
-function init () {}
-
-
-function buildPrefsWidget () {
-  let widget = new MyPrefsWidget();
-  widget.show_all();
-  return widget;
+function init() {
+    ExtensionUtils.initTranslations('moonphases');
 }
 
-
-const MyPrefsWidget = GObject.registerClass(
-class MyPrefsWidget extends Gtk.ScrolledWindow {
-
-  _init (params) {
-
-    super._init(params);
-    
-    this._settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.moonphases'); 
-
+function buildPrefsWidget () {
+    let settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.moonphases'); 
     let builder = new Gtk.Builder();
     builder.set_translation_domain('MoonPhases');
     builder.add_from_file(Me.path + '/prefs.ui');
+          
+    let widget0 = builder.get_object('elatitude');
+    widget0.set_text(settings.get_double('latitude').toString());  //met le champ a jour avec le setting
+    widget0.connect('changed', (widget0) => {    // connecte le champ po enregistrer les changement
+        let text = widget0.get_text();
+        if (!text) text = widget0.get_placeholder_text();
+        settings.set_double('latitude', parseFloat(text));
+        settings.set_boolean("torefresh", true);
+     });
         
-    let widget = builder.get_object('latitude');
-    widget.set_text(this._settings.get_double('latitude').toString());  //met le champ a jour avec le setting
-    widget.connect('changed', (widget) => {    // connecte le champ po enregistrer les changement
-                let text = widget.get_text();
-                if (!text) text = widget.get_placeholder_text();
-                this._settings.set_double('latitude', parseFloat(text));
+    let  widget1 = builder.get_object('elongitude');
+    //  settings.bind('longitude', widget1, 'text', Gio.SettingsBindFlags.DEFAULT);
+    widget1.set_text(settings.get_double('longitude').toString());
+    widget1.connect('changed', (widget1) => {
+        let text = widget1.get_text();
+        if (!text) text = widget1.get_placeholder_text();
+        settings.set_double('longitude', parseFloat(text));
+        settings.set_boolean("torefresh", true);
     });
-    
-    widget = builder.get_object('longitude');
-    widget.set_text(this._settings.get_double('longitude').toString());
-    widget.connect('changed', (widget) => {
-        let text = widget.get_text();
-                if (!text) text = widget.get_placeholder_text();
-                this._settings.set_double('longitude', parseFloat(text));
+
+    let widget2 = builder.get_object('comblat');
+    widget2.set_active(settings.get_int('comblat'));
+    widget2.connect('changed', (widget2) => {
+        settings.set_int('comblat', widget2.get_active());
+        settings.set_boolean("torefresh", true);
+    });;
+
+    let widget3 = builder.get_object('comblon');
+    widget3.set_active(settings.get_int('comblon'));
+    widget3.connect('changed', (widget3) => {
+        settings.set_int('comblon', widget3.get_active());
+        settings.set_boolean("torefresh", true);
     });
-    
-    widget = builder.get_object('comblat');
-    widget.set_active(this._settings.get_int('comblat'));
-    widget.connect('changed', (widget) => {
-                this._settings.set_int('comblat', widget.get_active());
-    });
-         
-    widget = builder.get_object('comblon');
-    widget.set_active(this._settings.get_int('comblon'));
-    widget.connect('changed', (widget) => {
-                this._settings.set_int('comblon', widget.get_active());
-    });
-        
-    this.add( builder.get_object('prefs-container') );
-  }
-});
+      
+    return builder.get_object('prefs-container') ;
+}
 

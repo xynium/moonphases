@@ -3,7 +3,5 @@
   "description": "Moon and sun data",
   "uuid": "moonphases@xynium.github.com",
   "url" : "https://github.com/xynium/moonphases", 
-  "shell-version": [
-    "3.36"
-  ]
+  "shell-version": [  "42","43" ]
 }

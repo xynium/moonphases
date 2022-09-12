@@ -1,159 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
-<interface>
-  <requires lib="gtk+" version="3.16"/>
-  <object class="GtkBox" id="prefs-container">
-    <property name="can_focus">False</property>
-    <property name="margin_left">6</property>
-    <property name="margin_right">6</property>
-    <property name="margin_top">6</property>
-    <property name="margin_bottom">6</property>
-    <property name="spacing">2</property>
-    <child>
-      <object class="GtkPaned">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkLabel" id="labPos">
+<interface domain="MoonPhases">
+      <requires lib="gtk" version="4.6"/>
+      <object class="GtkBox" id="prefs-container">
+         <property name="homogeneous">True</property>
+         <child>
+          <object class="GtkFrame">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Moon Phases Position :</property>
-          </object>
-          <packing>
-            <property name="resize">False</property>
-            <property name="shrink">True</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkBox">
+            <!--property name="orientation">vertical</property-->
+            <child type="label">>
+              <object class="GtkLabel" id="labPos">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkLabel" id="labLat">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Latitude (DD.MMMM) :</property>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="latitude">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="placeholder_text" translatable="yes">40</property>
-                    <signal name="changed" handler="on_latitude_changed" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkComboBoxText" id="comblat">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="active">0</property>
-                    <items>
-                      <item translatable="yes">N</item>
-                      <item translatable="yes">S</item>
-                    </items>
-                    <signal name="changed" handler="on_combLat_changed" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
+                <property name="label" translatable="yes">Moon Phases Position :</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+               <property name="orientation">vertical</property>
+               <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkLabel" id="labLon">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">Longitude (DDD.MMMM) :</property>
+                    <property name="homogeneous">True</property>
+                    <child>
+                      <object class="GtkLabel" id="labLat">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Latitude (DD.MMMM) :</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="elatitude">
+                        <property name="input-purpose">number</property>
+                        <property name="max-length">10</property>
+                        <property name="placeholder-text">40</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="comblat">
+                        <property name="visible">True</property>
+                        <property name="active">0</property>
+                        <items>
+                          <item translatable="yes">N</item>
+                          <item translatable="yes">S</item>
+                        </items>
+                      </object>
+                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
                 </child>
                 <child>
-                  <object class="GtkEntry" id="longitude">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="placeholder_text" translatable="yes">3</property>
-                    <signal name="changed" handler="on_longitude_changed" swapped="no"/>
+                    <property name="homogeneous">True</property>
+                   <child>
+                      <object class="GtkLabel" id="labLon">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Longitude (DDD.MMMM) :</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkEntry" id="elongitude">
+                          <property name="placeholder_text" translatable="yes">3</property>
+                          <property name="input-purpose">number</property>
+                          <property name="max-length">10</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkComboBoxText" id="comblon">
+                        <property name="visible">True</property>
+                        <property name="active">0</property>
+                        <items>
+                          <item translatable="yes">E</item>
+                          <item translatable="yes">W</item>
+                        </items>
+                      </object>
+                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkComboBoxText" id="comblon">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="active">0</property>
-                    <items>
-                      <item translatable="yes">E</item>
-                      <item translatable="yes">W</item>
-                    </items>
-                    <signal name="changed" handler="on" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="resize">True</property>
-            <property name="shrink">True</property>
-          </packing>
         </child>
-      </object>
-      <packing>
-        <property name="expand">True</property>
-        <property name="fill">True</property>
-        <property name="position">0</property>
-      </packing>
-    </child>
-  </object>
-  <object class="GtkAdjustment" id="update-time-params">
-    <property name="lower">1</property>
-    <property name="upper">60</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
+     </object>
 </interface>
