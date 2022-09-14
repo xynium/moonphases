@@ -8,6 +8,10 @@ The drawing of the icon should depend on the earth obliquity, but i have no docu
 
 Sun rise en set can be more precise. Those formula are simplified.
 
+use
+https://www.latlong.net/convert-address-to-lat-long.html
+to get your coordinate.
+
 
 
 
