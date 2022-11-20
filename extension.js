@@ -45,11 +45,10 @@ class MyPopup extends PanelMenu.Button {
         topBox.add_actor(label);
 
         area = new St.DrawingArea({
-            style_class : 'bg-color',
+            style_class: 'moonphases-drawarea-dim',
             reactive : true,
             can_focus : true,
-            track_hover : true,
-            style_class: 'moonphases-drawarea-dim'
+            track_hover : true
         });
         topBox.add_actor(area)
        
@@ -198,7 +197,7 @@ function enable() {
   myPopup = new MyPopup();
   isFresh=0;
   settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.moonphases');  //prefs.getSettings();
-  Main.panel.addToStatusArea('myPopup', myPopup, 1,'center');
+  Main.panel.addToStatusArea('myPopup', myPopup, 0,'center');
   timeout=Mainloop.timeout_add(1000, update );
 }
 
